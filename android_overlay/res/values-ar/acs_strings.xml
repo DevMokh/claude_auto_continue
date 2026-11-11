@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="acs_service_label">Claude Auto Continue</string>
+    <string name="acs_description">تقرأ فقط شاشة تطبيق Claude الرسمي لاكتشاف توقفه عند حد الاستخدام. وعند تفعيلك للأتمتة تضغط Continue أو ترسل كلمة كمل مرة واحدة. لا يخرج أي شيء من هاتفك.</string>
+    <string name="ch_monitor_name">المراقبة</string>
+    <string name="ch_attention_name">يحتاج تدخلك</string>
+    <string name="notif_stop">إيقاف</string>
+    <string name="notif_boot_title">Auto Continue كان يعمل</string>
+    <string name="notif_boot_text">أُعيد تشغيل الهاتف. افتح Claude على محادثتك ثم افتح هذا التطبيق واضغط ابدأ.</string>
+</resources>
