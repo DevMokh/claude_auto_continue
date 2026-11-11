@@ -1,7 +1,8 @@
 # Changelog
 
 ## بناء تلقائي (تحديث)
-- `build.yml`: يعمل مع كل Push، يولّد `android/` ذاتيًا، يرفع الـ APK إلى Releases وملفات السجلات إلى Artifacts، ويكتب ملخصًا للأخطاء.
+- مجلد `android/` كامل داخل المشروع (Gradle 8.14 / AGP 8.11.1 / Kotlin 2.2.20) بدل توليده؛ حُذف `android_overlay/`.
+- `build.yml`: يعمل مع كل Push، يرفع الـ APK إلى Releases وملفات السجلات إلى Artifacts، ويكتب ملخصًا للأخطاء.
 - `bootstrap.sh`: فشل analyze/test لا يمنع بناء الـ APK؛ يكتب `dist/checks.txt` و`dist/ERRORS.txt`؛ يتحقق من الـ namespace وminSdk.
 
 ## 1.0.0 (غير مُصدَر بعد — كود مكتوب بلا بناء)
