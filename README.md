@@ -11,9 +11,9 @@
 
 ## البناء (تلقائي)
 
-**على GitHub (الأسهل من الهاتف):** ارفع المشروع. الملف `.github/workflows/build.yml` يشتغل مع كل Push، ويولّد مجلد `android/` بنفسه، ويشغّل التحليل والاختبارات، ويبني الـ APK، وينزّله في **Releases** (تبويب Releases في الريبو). نتائج `analyze` و`test` والأخطاء تظهر في ملخص الـ job وفي ملف `dist/` ضمن Artifacts.
+مجلد `android/` **موجود داخل المشروع** (Gradle 8.14 + AGP 8.11.1 + Kotlin 2.2.20، وهي الحزمة التي نجح بها مطوّرون مع Flutter 3.47.x؛ AGP 9 وKotlin 2.4 أحدث مما يدعمه 3.47 رسميًا). لذلك يكفي أي أمر عادي: `flutter pub get` ثم `flutter build apk`، بما في ذلك زر البناء في محرر الأكواد.
 
-ملاحظة: التحليل والاختبارات **لا توقف** بناء الـ APK (الكود مكتوب بلا مترجم، فتريد الـ APK وقائمة الأخطاء معًا). فشل البناء نفسه فقط هو ما يُفشل الـ job، وسيجد `dist/ERRORS.txt` أهم السطور.
+**على GitHub:** `.github/workflows/build.yml` يشتغل مع كل Push، يحلّل ويختبر ويبني الـ APK وينزّله في **Releases**، والسجلات في Artifacts وملخص الـ job. التحليل والاختبارات **لا توقف** بناء الـ APK؛ فشل البناء نفسه فقط يُفشل الـ job، وفي `dist/ERRORS.txt` أهم السطور.
 
 **على جهازك:**
 ```bash
@@ -21,11 +21,11 @@
 ./scripts/bootstrap.sh            # Debug APK
 ./scripts/bootstrap.sh --release  # + Release APK
 ```
-الناتج في `dist/`. السكربت يولّد هيكل Gradle بنسخة Flutter عندك ثم ينسخ فوقه كود Kotlin والـ Manifest من `android_overlay/` ويضبط `minSdk 26`. (لا نكتب ملفات Gradle يدويًا لأنها تتغير جذريًا بين إصدارات Flutter، مثل AGP 9 في 3.47.)
+الناتج في `dist/`. لا يوجد `gradlew` ولا `gradle-wrapper.jar` في المجلد عمدًا: Flutter يحقنهما تلقائيًا عند أول بناء.
 
-**تنبيه عن workflow الـ IDE:** إن كان محرر الأكواد يبني بـ workflow خاص به ينفّذ `flutter build apk` مباشرة، فسيفشل ما دام مجلد `android/` غير موجود في الريبو. تجاهله واستخدم workflow **Build APK** أعلاه.
+**التوقيع:** الـ Release يُوقَّع بمفتاح الـ debug (مقبول للتثبيت الشخصي، وليس للنشر).
 
-**التوقيع:** الـ Release يُوقَّع بمفتاح الـ debug ما لم تُعدّ `key.properties`. مقبول للتثبيت الشخصي، وليس للنشر.
+**غير مُتحقَّق منه:** لم أبنِ المشروع فعليًا. إن اشتكى Flutter من إصدار AGP/Gradle/Kotlin فأرسل الرسالة وأعدّل الأرقام في `android/settings.gradle.kts` و`android/gradle/wrapper/gradle-wrapper.properties`.
 
 ## الاستخدام
 1. ثبّت الـ APK، وافتح التطبيق، واتبع قائمة الإعداد في الشاشة الرئيسية: خدمة Accessibility، الإشعارات، استثناء البطارية.
@@ -58,7 +58,7 @@
 
 ## الصلاحيات
 `ACCESS_NETWORK_STATE`, `POST_NOTIFICATIONS`, `FOREGROUND_SERVICE(+SPECIAL_USE)`, `WAKE_LOCK`, `RECEIVE_BOOT_COMPLETED`, وخدمة Accessibility (اختيارية، بموافقتك، محصورة بحزمة Claude، لا تقرأ كلمات المرور).
-**لا يوجد `INTERNET` في الـ release.** (نسخة debug تضيفه Flutter تلقائيًا لأدوات التطوير.) السجل في SQLite محلي ولا يُرسل لأي مكان.
+**لا يوجد `INTERNET`** في أي نسخة (لا release ولا debug). السجل في SQLite محلي ولا يُرسل لأي مكان.
 
 ## قيود معروفة
 - الشاشة يجب أن تبقى مضاءة وغير مقفلة وClaude في المقدمة. هذا قيد Android لا حل برمجي له.
@@ -85,7 +85,7 @@ lib/
 │   └── (مخازن: SQLite للسجل، SharedPreferences للإعدادات والحالة)
 ├── features/ (dashboard, monitoring, automation, settings, activity_logs)
 └── shared/widgets/
-android_overlay/        # Manifest + Kotlin + resources تُنسخ فوق android/ بواسطة bootstrap.sh
+android/                # مشروع Android كامل: Gradle + Manifest + Kotlin (app/src/main/kotlin) + resources
 test/                   # اختبارات وحدة بشاشات محاكاة
 docs/                   # PHASE1_REPORT.md, DEVICE_TEST_PLAN.md
 ```
