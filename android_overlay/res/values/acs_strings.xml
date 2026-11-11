@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="acs_service_label">Claude Auto Continue</string>
+    <string name="acs_description">Reads only the screen of the official Claude app to detect when it stops at the usage limit. When you turn automation on, it presses Continue or sends the word كمل once. Nothing leaves your phone.</string>
+    <string name="ch_monitor_name">Monitoring</string>
+    <string name="ch_attention_name">Needs attention</string>
+    <string name="notif_stop">Stop</string>
+    <string name="notif_boot_title">Auto Continue was running</string>
+    <string name="notif_boot_text">The phone restarted. Open Claude to your conversation, then open this app and press Start.</string>
+</resources>
