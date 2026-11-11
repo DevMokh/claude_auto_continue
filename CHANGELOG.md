@@ -1,5 +1,9 @@
 # Changelog
 
+## بناء تلقائي (تحديث)
+- `build.yml`: يعمل مع كل Push، يولّد `android/` ذاتيًا، يرفع الـ APK إلى Releases وملفات السجلات إلى Artifacts، ويكتب ملخصًا للأخطاء.
+- `bootstrap.sh`: فشل analyze/test لا يمنع بناء الـ APK؛ يكتب `dist/checks.txt` و`dist/ERRORS.txt`؛ يتحقق من الـ namespace وminSdk.
+
 ## 1.0.0 (غير مُصدَر بعد — كود مكتوب بلا بناء)
 - محرك Auto Continue: آلة حالة بتسع حالات، فترة انتظار لكل Usage Limit، إرسال واحد لكل فترة (علامة write-ahead محفوظة).
 - اكتشاف مستقل لحد الاستخدام، مع تجاهل النصوص الطويلة.
