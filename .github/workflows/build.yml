@@ -1,8 +1,7 @@
 name: Build APK
 
 # Runs on every push (any branch) and by hand from the Actions tab.
-# Self-contained: it generates android/ itself, so it works even if the repo
-# has no android/ folder.
+# The android/ project is committed in the repo (Gradle 8.14, AGP 8.11.1, Kotlin 2.2.20).
 on:
   push:
   workflow_dispatch:
@@ -31,7 +30,7 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Generate android/, analyze, test, build APK
+      - name: Analyze, test, build APK
         run: bash scripts/bootstrap.sh
 
       - name: Job summary
