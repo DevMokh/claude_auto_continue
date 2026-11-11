@@ -15,9 +15,11 @@
 | 9 | الاختبارات وإصلاح الأخطاء | ⚠️ الاختبارات مكتوبة؛ **لم تُشغَّل** فلا إصلاح أخطاء حقيقي بعد |
 | 10 | بناء APK + ZIP | ❌ APK غير ممكن هنا. ✅ ZIP + سكربت بناء + CI |
 
-## تحديث: البناء التلقائي
-- سبب فشل أول بناء في الـ IDE: لا يوجد مجلد `android/` في الريبو، وworkflow الـ IDE ينفّذ `flutter build` مباشرة. الحل: `build.yml` الجديد يولّده بنفسه.
-- لم أستطع فتح صفحة Actions للريبو من هنا، فلم أرَ سجل أي تشغيل لـ `build.yml`. أول تشغيل حقيقي سيكشف أخطاء التجميع.
+## تحديث: مجلد android/ أصبح داخل المشروع
+- سبب فشل بناء الـ IDE: لا يوجد `android/` في الريبو، وworkflow الـ IDE ينفّذ `flutter build apk --release` مباشرة.
+- الحل: كتبت `android/` كاملًا (settings/build/gradle.properties/wrapper properties/app/build.gradle.kts + styles + أيقونة تكيّفية) بإصدارات Gradle 8.14 وAGP 8.11.1 وKotlin 2.2.20.
+- مصدر الأرقام: تقرير مطوّر نجح بها مع Flutter 3.47.4، وتصريح فريق Flutter بأن AGP 9.1/Kotlin 2.4/Gradle 9.3 أحدث مما يدعمه 3.47.2. **لم تُختبر على 3.47.2 نفسه.**
+- أُلغي مجلد `android_overlay/` (دُمج في `android/app/src/main`).
 
 ## الخطوة التالية (عندك)
 1. `./scripts/bootstrap.sh` (أو GitHub Actions) وأرسل لي أي أخطاء `flutter analyze` / `flutter test` / Gradle لإصلاحها.
