@@ -9,18 +9,23 @@
 > - كل أنماط التعرف على واجهة Claude (`ui_patterns.dart`) **تخمينات** حتى تعايرها على هاتفك.
 > التفاصيل الصادقة في `TEST_REPORT.md` و`docs/PHASE1_REPORT.md`.
 
-## البناء (خطوة واحدة)
+## البناء (تلقائي)
 
+**على GitHub (الأسهل من الهاتف):** ارفع المشروع. الملف `.github/workflows/build.yml` يشتغل مع كل Push، ويولّد مجلد `android/` بنفسه، ويشغّل التحليل والاختبارات، ويبني الـ APK، وينزّله في **Releases** (تبويب Releases في الريبو). نتائج `analyze` و`test` والأخطاء تظهر في ملخص الـ job وفي ملف `dist/` ضمن Artifacts.
+
+ملاحظة: التحليل والاختبارات **لا توقف** بناء الـ APK (الكود مكتوب بلا مترجم، فتريد الـ APK وقائمة الأخطاء معًا). فشل البناء نفسه فقط هو ما يُفشل الـ job، وسيجد `dist/ERRORS.txt` أهم السطور.
+
+**على جهازك:**
 ```bash
 # يلزم: Flutter stable + JDK 17 + Android SDK
-./scripts/bootstrap.sh            # pub get + format + analyze + test + Debug APK
+./scripts/bootstrap.sh            # Debug APK
 ./scripts/bootstrap.sh --release  # + Release APK
 ```
-الناتج في `dist/`. السكربت يولّد هيكل Gradle بنسخة Flutter عندك (`flutter create`) ثم ينسخ فوقه كود Kotlin والـ Manifest من `android_overlay/` ويضبط `minSdk 26`.
+الناتج في `dist/`. السكربت يولّد هيكل Gradle بنسخة Flutter عندك ثم ينسخ فوقه كود Kotlin والـ Manifest من `android_overlay/` ويضبط `minSdk 26`. (لا نكتب ملفات Gradle يدويًا لأنها تتغير جذريًا بين إصدارات Flutter، مثل AGP 9 في 3.47.)
 
-بدون جهاز: ارفع المجلد إلى GitHub وشغّل Workflow **Build APK** (`.github/workflows/build.yml`)، ثم نزّل الـ APK من Artifacts.
+**تنبيه عن workflow الـ IDE:** إن كان محرر الأكواد يبني بـ workflow خاص به ينفّذ `flutter build apk` مباشرة، فسيفشل ما دام مجلد `android/` غير موجود في الريبو. تجاهله واستخدم workflow **Build APK** أعلاه.
 
-**التوقيع:** الـ Release يُوقَّع بمفتاح الـ debug ما لم تُعدّ `key.properties`. هذا مقبول للتثبيت الشخصي، وليس للنشر.
+**التوقيع:** الـ Release يُوقَّع بمفتاح الـ debug ما لم تُعدّ `key.properties`. مقبول للتثبيت الشخصي، وليس للنشر.
 
 ## الاستخدام
 1. ثبّت الـ APK، وافتح التطبيق، واتبع قائمة الإعداد في الشاشة الرئيسية: خدمة Accessibility، الإشعارات، استثناء البطارية.
