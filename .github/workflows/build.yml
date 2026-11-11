@@ -1,13 +1,23 @@
 name: Build APK
 
+# Runs on every push (any branch) and by hand from the Actions tab.
+# Self-contained: it generates android/ itself, so it works even if the repo
+# has no android/ folder.
 on:
   push:
-    branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: write   # needed to attach the APK to a GitHub Release
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
@@ -21,10 +31,44 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Bootstrap, analyze, test, build debug APK
+      - name: Generate android/, analyze, test, build APK
         run: bash scripts/bootstrap.sh
 
-      - uses: actions/upload-artifact@v4
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "## Build report"
+            echo '```'
+            cat dist/checks.txt 2>/dev/null || echo "no checks.txt"
+            echo '```'
+            if [ -f dist/ERRORS.txt ]; then
+              echo "### Build errors"; echo '```'; cat dist/ERRORS.txt; echo '```'
+            fi
+            if [ -f dist/analyze.txt ]; then
+              echo "### analyze (tail)"; echo '```'; tail -n 40 dist/analyze.txt; echo '```'
+            fi
+            if [ -f dist/test.txt ]; then
+              echo "### test (tail)"; echo '```'; tail -n 40 dist/test.txt; echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload build output (APK + logs)
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: claude-auto-continue-debug-apk
-          path: dist/*.apk
+          name: claude-auto-continue-build
+          path: dist/
+          if-no-files-found: warn
+
+      - name: Publish APK to a GitHub Release
+        if: success() && github.ref_type == 'branch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: Build ${{ github.run_number }}
+          prerelease: true
+          files: dist/*.apk
+          body: |
+            Debug APK built from ${{ github.sha }}.
+            Unverified build: see TEST_REPORT.md before trusting it.
